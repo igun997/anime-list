@@ -6,11 +6,13 @@ import { debounce } from 'lodash';
 import { Button, Card, Col, Grid, Image, Input, Row } from 'antd';
 import { FastBackwardFilled, SearchOutlined } from '@ant-design/icons';
 import { Resources } from '../types/types';
+import { useRouter } from 'next/router';
 
 const { useBreakpoint } = Grid;
 
 const Home: LayoutConfigWithNextPage = () => {
   const { xs } = useBreakpoint();
+  const router = useRouter();
   const [animeList, setAnimeList] = useState<Resources.animeResources[]>([]);
   const [pagination, setPagination] = useState<Resources.pagination | null>(null);
   const [filter, setFilter] = useState<getAnimeSearchTypes.request>({
@@ -53,8 +55,11 @@ const Home: LayoutConfigWithNextPage = () => {
   const limitSynopsys = (synopsys: string) => {
     return synopsys.length > 100 ? synopsys.substring(0, 100) + '...' : synopsys;
   };
-  const sortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilter((prev) => ({ ...prev, sort_by: e.target.value }));
+  const orderBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter((prev) => ({ ...prev, order_by: e.target.value }));
+  };
+  const showDetail = (id: number) => {
+    router.push(`/anime/${id}`);
   };
   useEffect(() => {
     loadAnimeList();
@@ -100,6 +105,7 @@ const Home: LayoutConfigWithNextPage = () => {
           <Col xs={24} md={8} lg={6} xl={4} key={item.mal_id}>
             <Card
               hoverable
+              onClick={() => showDetail(item.mal_id)}
               cover={
                 <Image
                   alt={`image-${item.mal_id}`}
