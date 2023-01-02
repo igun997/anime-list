@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { getAnimeSearchTypes } from '../types/services/getAnimeSearchTypes';
 import { getAnimeSearch } from '../services/root';
 import { debounce } from 'lodash';
-import { Card, Col, Grid, Image, Row } from 'antd';
+import { Button, Card, Col, Grid, Image, Input, Row } from 'antd';
+import { FastBackwardFilled, SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 
@@ -13,7 +14,7 @@ const Home: LayoutConfigWithNextPage = () => {
   const [pagination, setPagination] = useState<getAnimeSearchTypes.pagination | null>(null);
   const [filter, setFilter] = useState<getAnimeSearchTypes.request>({
     page: 1,
-    limit: 10,
+    limit: 12,
     q: '',
   });
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,8 +38,8 @@ const Home: LayoutConfigWithNextPage = () => {
     }
   };
   const handlePrevPage = () => {
-    if (pagination?.last_visible_page) {
-      if (pagination.last_visible_page > 0) {
+    if (pagination?.current_page) {
+      if (pagination.current_page > 0) {
         setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
       }
     }
@@ -51,29 +52,67 @@ const Home: LayoutConfigWithNextPage = () => {
   const limitSynopsys = (synopsys: string) => {
     return synopsys.length > 100 ? synopsys.substring(0, 100) + '...' : synopsys;
   };
+  const sortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter((prev) => ({ ...prev, sort_by: e.target.value }));
+  };
   useEffect(() => {
     loadAnimeList();
   }, [filter]);
   return (
     <Row gutter={[10, 10]}>
-      {animeList.map((item) => (
-        <Col xs={24} md={8} lg={6} xl={4} key={item.mal_id}>
-          <Card
-            hoverable
-            cover={
-              <Image
-                alt={`image-${item.mal_id}`}
-                src={xs ? item.images.jpg.large_image_url : item.images.jpg.image_url}
-                height={300}
-              />
-            }>
-            <Card.Meta
-              title={item.titles.map((e) => e.title)[0]}
-              description={limitSynopsys(item.synopsis ?? '')}
+      <Col xs={24}>
+        <Row gutter={[10, 10]} justify={'space-between'}>
+          <Col>
+            <Input
+              placeholder={'Search'}
+              onChange={handleSearchWithDebounce}
+              suffix={<SearchOutlined />}
             />
-          </Card>
+          </Col>
+          <Col>
+            <Row gutter={[10, 10]}>
+              <Col xs={12}>
+                <Button
+                  onClick={handlePrevPage}
+                  disabled={pagination?.current_page === 1}
+                  icon={<FastBackwardFilled />}
+                />
+              </Col>
+              <Col xs={12}>
+                <Button
+                  onClick={handleNextPage}
+                  disabled={!pagination?.has_next_page}
+                  icon={<FastBackwardFilled rotate={180} />}
+                />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Col>
+      {loading && (
+        <Col xs={24}>
+          <Card loading />
         </Col>
-      ))}
+      )}
+      {!loading &&
+        animeList.map((item) => (
+          <Col xs={24} md={8} lg={6} xl={4} key={item.mal_id}>
+            <Card
+              hoverable
+              cover={
+                <Image
+                  alt={`image-${item.mal_id}`}
+                  src={xs ? item.images.jpg.large_image_url : item.images.jpg.image_url}
+                  height={300}
+                />
+              }>
+              <Card.Meta
+                title={item.titles.map((e) => e.title)[0]}
+                description={limitSynopsys(item.synopsis ?? '')}
+              />
+            </Card>
+          </Col>
+        ))}
     </Row>
   );
 };
