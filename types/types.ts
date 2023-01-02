@@ -2,6 +2,12 @@ export namespace Resources {
   export type animeTypes = 'tv' | 'movie' | 'ova' | 'special' | 'ona' | 'music';
   export type animeRating = 'g' | 'pg' | 'pg13' | 'r17' | 'r' | 'rx';
   export type animeStatus = 'airing' | 'completed' | 'tba' | 'upcoming';
+  export type animeGenres = {
+    mal_id: number;
+    name: string;
+    url: string;
+    count: number;
+  };
   export type animeContributors = {
     mal_id: number;
     type: string;
