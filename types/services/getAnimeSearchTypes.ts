@@ -13,7 +13,7 @@ export namespace getAnimeSearchTypes {
     sfw?: boolean;
     genres?: string;
     genres_exclude?: string;
-    order_by?: Resources.animeOrder;
+    order_by?: Resources.animeOrder | string;
     sort?: 'asc' | 'desc';
     letter?: string;
     producers?: string;
