@@ -1,10 +1,6 @@
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { Col, Drawer, Grid, Image, Layout, Row } from 'antd';
+import { Grid, Image, Layout, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styles from './index.module.less';
-import MenuExtends from './partials/MenuExtends';
-import imageLogo from '../../assets/images/maukirimlogo.png';
-import imageLogoColapse from '../../assets/images/favicon.png';
 
 const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -23,46 +19,18 @@ const BaseLayout: React.FC<any> = ({ children }) => {
   return (
     <>
       <Layout className={styles.root}>
-        <Sider
-          width={250}
-          theme={'light'}
-          hidden={xs}
-          trigger={null}
-          id={'components-layout'}
-          collapsible
-          collapsed={collapsed}>
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-            }}>
-            <Image
-              src={collapsed ? imageLogoColapse.src : imageLogo.src}
-              style={{
-                width: 'auto',
-                margin: collapsed ? 14 : 0,
-                height: collapsed ? 32 : 60,
-              }}
-              preview={false}
-            />
-          </div>
-          <MenuExtends theme={'light'} />
-        </Sider>
-        {xs && (
-          <Drawer title={'maukirim'} placement="left" onClose={onClose} visible={collapsed}>
-            <MenuExtends theme={'light'} onClose={onClose} />
-          </Drawer>
-        )}
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ paddingLeft: 20 }}>
             <Row justify={'space-between'}>
-              <Col>
-                {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                  className: 'trigger',
-                  onClick: () => setCollapsed(!collapsed),
-                })}
-              </Col>
+              <Image
+                width={40}
+                height={40}
+                src={
+                  'https://static.vecteezy.com/system/resources/previews/006/793/369/original/gamer-anime-boy-with-character-with-rock-hand-sign-mascot-esport-logo-free-vector.jpg'
+                }
+                preview={false}
+                className={styles.logo}
+              />
             </Row>
           </Header>
           <Content
