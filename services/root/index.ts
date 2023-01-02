@@ -1,7 +1,8 @@
 import { initializeHttp } from '../../configs/http.config';
 import { API_HOST } from '../../constants/http.constant';
 import { getAnimeSearchTypes } from '../../types/services/getAnimeSearchTypes';
-import { getAnimeByIdTypes } from '../../types/services/getAnimeById';
+import { getAnimeByIdTypes } from '../../types/services/getAnimeByIdTypes';
+import { getAnimeGenresTypes } from '../../types/services/getAnimeGenresTypes';
 
 const http = initializeHttp(API_HOST ?? '');
 /**
@@ -32,4 +33,19 @@ export const getAnimeById = (params: getAnimeByIdTypes.request) => {
     .catch((err) => {
       throw err;
     }) as Promise<getAnimeByIdTypes.response>;
+};
+/**
+ * @description Get anime genres
+ * @param params getAnimeGenresTypes.request
+ * @returns Promise<getAnimeGenresTypes.response>
+ */
+export const getAnimeGenres = (params: getAnimeGenresTypes.request) => {
+  return http
+    .get('genres/anime', {
+      params,
+    })
+    .then((res) => res.data)
+    .catch((err) => {
+      throw err;
+    }) as Promise<getAnimeGenresTypes.response>;
 };
