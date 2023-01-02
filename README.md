@@ -32,4 +32,25 @@
     ```sh
     npm dev
     ```
+
+## Deployment with Docker
+
+1. Clone the repo
+   ```sh
+    git clone git@github.com:igun997/anime-list.git
+    ```
+2. Build the image
+    ```sh
+    docker build -t anime-list .
+    ```
+3. Run the container
+    ```sh
+    docker run -p 3000:3000 anime-list
+    ```
+4. Open the app in your browser
+    ```sh
+    http://localhost:3000
+    ```
+   
+
    
