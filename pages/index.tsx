@@ -1,19 +1,32 @@
 import { LayoutConfigWithNextPage } from '../configs/layout.config';
 import React, { useEffect, useState } from 'react';
 import { getAnimeSearchTypes } from '../types/services/getAnimeSearchTypes';
-import { getAnimeSearch } from '../services/root';
+import { getAnimeGenres, getAnimeSearch } from '../services/root';
 import { debounce } from 'lodash';
-import { Button, Card, Col, Grid, Image, Input, Row } from 'antd';
+import { Button, Card, Col, Grid, Image, Input, Row, Select } from 'antd';
 import { FastBackwardFilled, SearchOutlined } from '@ant-design/icons';
 import { Resources } from '../types/types';
 import { useRouter } from 'next/router';
 
 const { useBreakpoint } = Grid;
-
+const genreList = [
+  'Action',
+  'Adventure',
+  'Cars',
+  'Comedy',
+  'Dementia',
+  'Demons',
+  'Drama',
+  'Ecchi',
+  'Fantasy',
+  'Game',
+  'Harem',
+];
 const Home: LayoutConfigWithNextPage = () => {
   const { xs } = useBreakpoint();
   const router = useRouter();
   const [animeList, setAnimeList] = useState<Resources.animeResources[]>([]);
+  const [genreList, setGenreList] = useState<Resources.animeGenres[]>([]);
   const [pagination, setPagination] = useState<Resources.pagination | null>(null);
   const [filter, setFilter] = useState<getAnimeSearchTypes.request>({
     page: 1,
@@ -21,6 +34,7 @@ const Home: LayoutConfigWithNextPage = () => {
     q: '',
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingGenres, setLoadingGenres] = useState<boolean>(false);
   const loadAnimeList = () => {
     setLoading(true);
     getAnimeSearch(filter)
@@ -33,6 +47,20 @@ const Home: LayoutConfigWithNextPage = () => {
       })
       .finally(() => {
         setLoading(false);
+      });
+  };
+  const loadAnimeGenres = () => {
+    getAnimeGenres({
+      filter: 'genres',
+    })
+      .then((res) => {
+        setGenreList(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingGenres(false);
       });
   };
   const handleNextPage = () => {
@@ -55,8 +83,11 @@ const Home: LayoutConfigWithNextPage = () => {
   const limitSynopsys = (synopsys: string) => {
     return synopsys.length > 100 ? synopsys.substring(0, 100) + '...' : synopsys;
   };
-  const orderBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilter((prev) => ({ ...prev, order_by: e.target.value }));
+  const orderBy = (e: string) => {
+    setFilter((prev) => ({ ...prev, order_by: e }));
+  };
+  const filterByGenre = (e: any) => {
+    setFilter((prev) => ({ ...prev, genres: e.join(',') }));
   };
   const showDetail = (id: number) => {
     router.push(`/anime/${id}`);
@@ -64,16 +95,39 @@ const Home: LayoutConfigWithNextPage = () => {
   useEffect(() => {
     loadAnimeList();
   }, [filter]);
+  useEffect(() => {
+    loadAnimeGenres();
+  }, []);
   return (
     <Row gutter={[10, 10]}>
       <Col xs={24}>
         <Row gutter={[10, 10]} justify={'space-between'}>
           <Col>
-            <Input
-              placeholder={'Search'}
-              onChange={handleSearchWithDebounce}
-              suffix={<SearchOutlined />}
-            />
+            <Row gutter={[5, 5]} justify={'space-between'}>
+              <Col>
+                <Input
+                  placeholder={'Search'}
+                  onChange={handleSearchWithDebounce}
+                  suffix={<SearchOutlined />}
+                />
+              </Col>
+              <Col>
+                <Select
+                  loading={loadingGenres}
+                  mode={'multiple'}
+                  style={{
+                    width: 180,
+                  }}
+                  placeholder={'Filter by Genre'}
+                  options={genreList.map((e) => ({
+                    label: e.name,
+                    value: e.mal_id,
+                  }))}
+                  allowClear
+                  onChange={filterByGenre}
+                />
+              </Col>
+            </Row>
           </Col>
           <Col>
             <Row gutter={[10, 10]}>
