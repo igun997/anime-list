@@ -5,13 +5,14 @@ import { getAnimeSearch } from '../services/root';
 import { debounce } from 'lodash';
 import { Button, Card, Col, Grid, Image, Input, Row } from 'antd';
 import { FastBackwardFilled, SearchOutlined } from '@ant-design/icons';
+import { Resources } from '../types/types';
 
 const { useBreakpoint } = Grid;
 
 const Home: LayoutConfigWithNextPage = () => {
   const { xs } = useBreakpoint();
-  const [animeList, setAnimeList] = useState<getAnimeSearchTypes.data[]>([]);
-  const [pagination, setPagination] = useState<getAnimeSearchTypes.pagination | null>(null);
+  const [animeList, setAnimeList] = useState<Resources.animeResources[]>([]);
+  const [pagination, setPagination] = useState<Resources.pagination | null>(null);
   const [filter, setFilter] = useState<getAnimeSearchTypes.request>({
     page: 1,
     limit: 12,
